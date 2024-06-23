@@ -1,34 +1,53 @@
-interface Product {
+
+export interface IProductCard {
 	id: number;
 	name: string;
 	price: number;
 	description: string;
 	image: string;
 }
-interface CartItem {
+
+export interface Product {
+	id: string;
+	title: string;
+	price: number;
+	description: string;
+	image: HTMLImageElement;
+	category: string;
+}
+
+export interface CartItem {
 	product: Product;
 	quantity: number;
 }
-interface UserCheckoutData {
+
+export interface UserCheckoutData {
 	email: string;
 	phone: string;
 	address: string;
 	paymentMethod: string;
 }
-interface APIClient {
+
+export interface APIClient {
 	getProductById(id: number): Promise<Product>;
 	getAllProducts(): Promise<Product[]>;
 	addProductToCart(productId: number): Promise<void>;
 	removeProductFromCart(productId: number): Promise<void>;
 }
-interface ProductCardProps {
+
+export interface ProductCardProps {
 	product: Product;
 	onOpenModal: (product: Product) => void;
 }
 
-interface ProductModalProps {
+export interface ProductModalProps {
 	product: Product;
 	onClose: () => void;
 	onAddToCart: (product: Product) => void;
 	onRemoveFromCart: (product: Product) => void;
+}
+
+export interface Screen {
+	show: () => void;
+	hide: () => void;
 }

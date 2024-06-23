@@ -27,25 +27,22 @@ export function ensureAllElements<T extends HTMLElement>(selectorElement: Select
 
 export type SelectorElement<T> = T | string;
 
-export function ensureElement<T extends HTMLElement>(selectorElement: SelectorElement<T>, context?: HTMLElement): T {
+export function ensureElement<T extends HTMLElement>(selectorElement: SelectorElement<T>, context: HTMLElement = document.body): T {
     if (isSelector(selectorElement)) {
-        const elements = ensureAllElements<T>(selectorElement, context);
-        if (elements.length > 1) {
-            console.warn(`selector ${selectorElement} return more then one element`);
+        const element = context.querySelector(selectorElement);
+        if (!element) {
+            throw new Error(`Элемент ${selectorElement} not found in the given context.`);
         }
-        if (elements.length === 0) {
-            throw new Error(`selector ${selectorElement} return nothing`);
-        }
-        return elements.pop() as T;
+        return element as T;
     }
-    if (selectorElement instanceof HTMLElement) {
-        return selectorElement as T;
-    }
-    throw new Error('Unknown selector element');
+    return selectorElement;
 }
 
 export function cloneTemplate<T extends HTMLElement>(query: string | HTMLTemplateElement): T {
-    const template = ensureElement(query) as HTMLTemplateElement;
+    const template = ensureElement<HTMLTemplateElement>(query);
+    if (!template.content.firstElementChild) {
+        throw new Error(`Template ${query} не содержит элементов`);
+    }
     return template.content.firstElementChild.cloneNode(true) as T;
 }
 
@@ -93,9 +90,11 @@ export function getElementData<T extends Record<string, unknown>>(el: HTMLElemen
  * Проверка на простой объект
  */
 export function isPlainObject(obj: unknown): obj is object {
+    if (obj === null || obj === undefined) {
+        return false;
+    }
     const prototype = Object.getPrototypeOf(obj);
-    return  prototype === Object.getPrototypeOf({}) ||
-        prototype === null;
+    return prototype === Object.getPrototypeOf({}) || prototype === null;
 }
 
 export function isBoolean(v: unknown): v is boolean {

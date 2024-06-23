@@ -24,7 +24,10 @@ const config = {
     open: true,
     host: "localhost",
     watchFiles: ["src/pages/*.html"],
-    hot: true
+    hot: true,
+    static: {
+      directory: path.join(__dirname, 'public'),
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
