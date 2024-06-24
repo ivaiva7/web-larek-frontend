@@ -1,53 +1,70 @@
-
-export interface IProductCard {
-	id: number;
-	name: string;
-	price: number;
-	description: string;
-	image: string;
-}
-
 export interface Product {
 	id: string;
-	title: string;
-	price: number;
 	description: string;
-	image: HTMLImageElement;
-	category: string;
+	image: string;
+	title: string;
+	category: ProductCategory;
+	price: number | null;
 }
 
-export interface CartItem {
-	product: Product;
-	quantity: number;
+export enum ProductCategory {
+	SOFT_SKILL = 'soft',
+	OTHER = 'other',
+	HARD_SKILL = 'hard',
+	ADDITIONAL = 'additional',
+	BUTTON = 'button'
 }
 
-export interface UserCheckoutData {
+export interface Order {
+	payment: string;
 	email: string;
 	phone: string;
 	address: string;
-	paymentMethod: string;
+	total: number;
+	items: string[];
 }
 
-export interface APIClient {
-	getProductById(id: number): Promise<Product>;
-	getAllProducts(): Promise<Product[]>;
-	addProductToCart(productId: number): Promise<void>;
-	removeProductFromCart(productId: number): Promise<void>;
+export interface OrderResult {
+	id: string;
+	total: number;
+	error?: string;
 }
 
-export interface ProductCardProps {
-	product: Product;
-	onOpenModal: (product: Product) => void;
+export type FormErrors = {
+	email?: string;
+	phone?: string;
+	address?: string;
+	payment?: string;
+};
+
+export type BasketProduct = Pick<Product, "id" | "title" | "price">;
+
+export type ListItem = {
+	index: number;
 }
 
-export interface ProductModalProps {
-	product: Product;
-	onClose: () => void;
-	onAddToCart: (product: Product) => void;
-	onRemoveFromCart: (product: Product) => void;
+export interface AppData {
+	products: Product[];
+	basket: Product[];
+	order: Order;
 }
 
-export interface Screen {
-	show: () => void;
-	hide: () => void;
+export interface List<T> {
+	items: T[];
+	total: number;
+}
+
+export enum Events {
+	PRODUCTS_CHANGED = 'products:changed',
+	PRODUCT_OPEN_IN_MODAL = 'product:openInModal',
+	ADD_TO_BASKET = 'product:addToBasket',
+	MODAL_OPEN = 'modal:open',
+	MODAL_CLOSE = 'modal:close',
+	BASKET_SHOW = 'basket:show',
+	ORDER_START = 'order:start',
+	REMOVE_PRODUCT_FROM_BASKET = 'product:removeFromBasket',
+	PAYMENT_METHOD = 'order:paymentMethod',
+	ORDER_READY = 'order:ready',
+	FORM_INVALID = 'form:invalidChanged',
+	ORDER_CLEARED = 'order:clear',
 }
