@@ -279,27 +279,27 @@ render(data?: Partial<T>): HTMLElement;
 ```
 data: Partial<T> — частичные данные для рендеринга (опционально).
 
-Класс AppData
-Класс для управления данными приложения.
-Свойства:
-products: IProduct[] — список продуктов.
-basket: IProduct[] — корзина.
-order: IOrder — заказ.
-formErrors: FormErrors — ошибки формы.
+Класс AppData \
+Класс для управления данными приложения.\
+Свойства:\
+products: IProduct[] — список продуктов.\
+basket: IProduct[] — корзина.\
+order: IOrder — заказ.\
+formErrors: FormErrors — ошибки формы.\
 Конструктор
 ```
 constructor(data: Partial<IAppData>, events: IEvents, products: IProduct[] = [], basket: IProduct[] = [], order: IOrder)
 ```
-Методы
-setProducts(products: IProduct[]) — устанавливает список продуктов.
-getProducts() — возвращает список продуктов.
-getBasket() — возвращает корзину.
-addToBasket(product: IProduct) — добавляет продукт в корзину.
-getTotalPrice() — возвращает общую стоимость корзины.
-removeFromBasket(product: IProduct) — удаляет продукт из корзины.
-getOrder() — возвращает заказ.
-isPreviousFormValid() — проверяет валидность предыдущей формы.
-setOrderField(field: keyof Omit<IOrder, 'items' | 'total'>, value: string) — устанавливает значение поля заказа.
-validateOrder(field: keyof IOrder) — валидирует заказ.
-clearBasket() — очищает корзину.
-clearOrder() — очищает заказ.
+Методы \
+setProducts(products: IProduct[]) — устанавливает список продуктов. \
+getProducts() — возвращает список продуктов. \
+getBasket() — возвращает корзину. \
+addToBasket(product: IProduct) — добавляет продукт в корзину. \
+getTotalPrice() — возвращает общую стоимость корзины. \
+removeFromBasket(product: IProduct) — удаляет продукт из корзины. \
+getOrder() — возвращает заказ. \
+isPreviousFormValid() — проверяет валидность предыдущей формы. \
+setOrderField(field: keyof Omit<IOrder, 'items' | 'total'>, value: string) — устанавливает значение поля заказа. \
+validateOrder(field: keyof IOrder) — валидирует заказ. \
+clearBasket() — очищает корзину. \
+clearOrder() — очищает заказ. \
