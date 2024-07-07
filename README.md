@@ -302,4 +302,4 @@ isPreviousFormValid() — проверяет валидность предыду
 setOrderField(field: keyof Omit<IOrder, 'items' | 'total'>, value: string) — устанавливает значение поля заказа. \
 validateOrder(field: keyof IOrder) — валидирует заказ. \
 clearBasket() — очищает корзину. \
-clearOrder() — очищает заказ. \
+clearOrder() — очищает заказ.
