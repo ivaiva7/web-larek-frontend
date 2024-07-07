@@ -1,4 +1,5 @@
-export interface Product {
+export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export interface IProduct {
 	id: string;
 	description: string;
 	image: string;
@@ -15,19 +16,19 @@ export enum ProductCategory {
 	BUTTON = 'button'
 }
 
-export interface Order {
-	payment: string;
-	email: string;
-	phone: string;
-	address: string;
-	total: number;
-	items: string[];
+export interface IOrder {
+	payment: string
+	email: string
+	phone: string
+	address: string
+	total: number
+	items: string[]
 }
 
-export interface OrderResult {
-	id: string;
-	total: number;
-	error?: string;
+export interface IOrderResult {
+	id: string
+	total: number
+	error?: string
 }
 
 export type FormErrors = {
@@ -37,21 +38,16 @@ export type FormErrors = {
 	payment?: string;
 };
 
-export type BasketProduct = Pick<Product, "id" | "title" | "price">;
+export type BasketProduct = Pick<IProduct, "id" | "title" | "price">;
 
 export type ListItem = {
 	index: number;
 }
 
-export interface AppData {
-	products: Product[];
-	basket: Product[];
-	order: Order;
-}
-
-export interface List<T> {
-	items: T[];
-	total: number;
+export interface IAppData {
+	products: IProduct[];
+	basket: IProduct[];
+	order: IOrder;
 }
 
 export enum Events {
@@ -67,4 +63,9 @@ export enum Events {
 	ORDER_READY = 'order:ready',
 	FORM_INVALID = 'form:invalidChanged',
 	ORDER_CLEARED = 'order:clear',
+}
+
+export interface List<T> {
+	items: T[]
+	total: number
 }
