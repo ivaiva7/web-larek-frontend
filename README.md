@@ -91,6 +91,14 @@ Subscriber: тип функции обратного вызова, которы�
 EventEmitter: класс, пкоторый позволяет подписываться на события, отправлять события. Класс используется в презентере для обработки событий и в слоях приложения для генерации событий.
 
 IEvents: интерфейс, который определяет методы, которые должен реализовать класс EventEmitter:
+
+```
+export interface IEvents {
+    on<T extends object>(event: EventName, callback: (data: T) => void): void;
+    emit<T extends object>(event: string, data?: T): void;
+    trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
+}
+```
   on: метод для подписки на событие с указанием типа данных T, который передается в коллбэк функцию.
   emit: метод для инициирования события с опциональными данными типа T.
   trigger: метод, возвращающий функцию, которая при вызове инициирует событие с указанным именем и контекстом данных типа T.
@@ -100,7 +108,7 @@ IEvents: интерфейс, который определяет методы, �
 # Типы данных, которые используются в приложении
 Интерфейс Продукта
 ```
-export interface Product {
+export interface IProduct {
 	id: string;
 	description: string;
 	image: string;
@@ -121,21 +129,21 @@ export enum ProductCategory {
 ```
 Интерфейс Заказа
 ```
-export interface Order {
-	payment: string;
-	email: string;
-	phone: string;
-	address: string;
-	total: number;
-	items: string[];
+export interface IOrder {
+	payment: string
+	email: string
+	phone: string
+	address: string
+	total: number
+	items: string[]
 }
 ```
 Интерфейс результата заказа
 ```
-export interface OrderResult {
-	id: string;
-	total: number;
-	error?: string;
+export interface IOrderResult {
+	id: string
+	total: number
+	error?: string
 }
 ```
 Тип данных BasketProduct, который является подмножеством типа Product. Он использует функцию Pick из  для выбора только определённых свойств из типа Product, а именно id, title и price.
@@ -148,7 +156,7 @@ export type FormErrors = {
 	phone?: string;
 	address?: string;
 	payment?: string;
-};
+}
 ```
 Обобщённый интерфейс списка, представляющий список элементов типа T с общим количеством элементов. Этот интерфейс позволяет создавать списки элементов любого типа T, хранящиеся в массиве items, с общим числом элементов, указанным в total.
 ```
@@ -180,6 +188,118 @@ export enum Events {
 	ORDER_CLEARED = 'order:clear',
 }
 ```
+Интерфейс IAppData - для данных приложения
 
+```
+export interface IAppData {
+	products: IProduct[];
+	basket: IProduct[];
+	order: IOrder;
+}
+```
 
+# Классы
 
+Класс AppApi
+Класс для взаимодействия с API приложения.
+Свойства
+cdn: string — URL CDN.
+Конструктор
+```
+constructor(cdn: string, baseUrl: string, options?: RequestInit)
+```
+Методы
+getProducts(): Promise<List<IProduct>> — получает список продуктов.
+makeOrder(order: IOrder): Promise<IOrderResult> — создает заказ.
+
+Класс Model<T>
+Абстрактный класс для модели данных.
+Конструктор
+```
+constructor(data: Partial<T>, protected events: IEvents);
+```
+data: Partial<T> — частичные данные для инициализации модели.
+events: IEvents — объект для управления событиями.
+
+Метод
+emitChanges(event: string, payload?: object) — генерирует событие с заданным именем и полезной нагрузкой.
+```
+emitChanges(event: string, payload?: object): void;
+```
+event: string — имя события.
+payload: object — данные события (по умолчанию пустой объект).
+
+Класс Component<T>
+Абстрактный класс для компонентов пользовательского интерфейса.
+Конструктор
+```
+protected constructor(protected readonly container: HTMLElement);
+```
+container: HTMLElement — HTML-элемент, содержащий компонент.
+Методы
+toggleClass(element: HTMLElement, className: string, force?: boolean) — переключает класс элемента.
+```
+toggleClass(element: HTMLElement, className: string, force?: boolean): void;
+```
+element: HTMLElement — HTML-элемент.
+className: string — имя класса.
+force: boolean — если указано, принудительно добавляет или удаляет класс.
+
+protected setText(element: HTMLElement, value: unknown) — устанавливает текстовое содержимое элемента.
+```
+protected setText(element: HTMLElement, value: unknown): void;
+```
+element: HTMLElement — HTML-элемент.
+value: unknown — текстовое содержимое.
+
+setDisabled(element: HTMLElement, state: boolean) — устанавливает состояние блокировки элемента.
+```
+setDisabled(element: HTMLElement, state: boolean): void;
+```
+element: HTMLElement — HTML-элемент.
+state: boolean — если true, элемент блокируется; если false, блокировка снимается.
+
+protected setVisible(element: HTMLElement) — делает элемент видимым.
+```
+protected setVisible(element: HTMLElement): void;
+```
+element: HTMLElement — HTML-элемент.
+
+protected setImage(element: HTMLImageElement, src: string, alt?: string) — устанавливает изображение для элемента.
+```
+protected setImage(element: HTMLImageElement, src: string, alt?: string): void;
+```
+element: HTMLImageElement — HTML-элемент изображения.
+src: string — источник изображения.
+alt: string — альтернативный текст (опционально).
+
+render(data?: Partial<T>): HTMLElement — рендерит данные и возвращает контейнер элемента.
+```
+render(data?: Partial<T>): HTMLElement;
+```
+data: Partial<T> — частичные данные для рендеринга (опционально).
+
+Класс AppData
+Класс для управления данными приложения.
+Свойства:
+products: IProduct[] — список продуктов.
+basket: IProduct[] — корзина.
+order: IOrder — заказ.
+formErrors: FormErrors — ошибки формы.
+Конструктор
+```
+constructor(data: Partial<IAppData>, events: IEvents, products: IProduct[] = [], basket: IProduct[] = [], order: IOrder)
+```
+Методы
+setProducts(products: IProduct[]) — устанавливает список продуктов.
+getProducts() — возвращает список продуктов.
+getBasket() — возвращает корзину.
+addToBasket(product: IProduct) — добавляет продукт в корзину.
+getTotalPrice() — возвращает общую стоимость корзины.
+removeFromBasket(product: IProduct) — удаляет продукт из корзины.
+getOrder() — возвращает заказ.
+isPreviousFormValid() — проверяет валидность предыдущей формы.
+setOrderField(field: keyof Omit<IOrder, 'items' | 'total'>, value: string) — устанавливает значение поля заказа.
+validateOrder(field: keyof IOrder) — валидирует заказ.
+clearBasket() — очищает корзину.
+clearOrder() — очищает заказ.
