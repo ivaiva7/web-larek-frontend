@@ -50,6 +50,12 @@ export interface IAppData {
 	order: IOrder;
 }
 
+export interface ProductsData {
+	products: IProduct[];
+	preview: string | null;
+	getProduct(productId: string): IProduct;
+}
+
 export enum Events {
 	PRODUCTS_CHANGED = 'products:changed',
 	PRODUCT_OPEN_IN_MODAL = 'product:openInModal',

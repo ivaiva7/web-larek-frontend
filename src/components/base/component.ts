@@ -1,10 +1,11 @@
+
 export abstract class Component<T> {
-	protected constructor(protected readonly container: HTMLElement) {}
+	protected constructor(protected readonly container: HTMLElement) {
+	}
+
 
 	toggleClass(element: HTMLElement, className: string, force?: boolean) {
-		if (element) {
-			element.classList.toggle(className, force);
-		}
+		element.classList.toggle(className, force);
 	}
 
 	protected setText(element: HTMLElement, value: unknown) {
@@ -15,24 +16,17 @@ export abstract class Component<T> {
 
 	setDisabled(element: HTMLElement, state: boolean) {
 		if (element) {
-			if (state) {
-				element.setAttribute('disabled', 'disabled');
-			} else {
-				element.removeAttribute('disabled');
-			}
+			if (state) element.setAttribute('disabled', 'disabled');
+			else element.removeAttribute('disabled');
 		}
 	}
 
 	protected setHidden(element: HTMLElement) {
-		if (element) {
-			element.style.display = 'none';
-		}
+		element.style.display = 'none';
 	}
 
 	protected setVisible(element: HTMLElement) {
-		if (element) {
-			element.style.removeProperty('display');
-		}
+		element.style.removeProperty('display');
 	}
 
 	protected setImage(element: HTMLImageElement, src: string, alt?: string) {
@@ -45,9 +39,7 @@ export abstract class Component<T> {
 	}
 
 	render(data?: Partial<T>): HTMLElement {
-		if (data) {
-			Object.assign(this, data);
-		}
+		Object.assign(this as object, data ?? {});
 		return this.container;
 	}
 }
