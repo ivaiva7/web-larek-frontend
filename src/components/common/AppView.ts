@@ -2,7 +2,7 @@ import { Component } from "../base/component";
 import { IEvents } from "../base/events";
 import { createElement, ensureElement } from '../../utils/utils';
 import { Events, ProductCategory, BasketProduct, ListItem } from "../../types/types";
-import { DOMSelectorsBasket } from './Basket';
+import { DOMSelectorsBasket } from './AppPresenter';
 
 
 const DOMSelectorsPage = {
