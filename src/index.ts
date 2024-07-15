@@ -12,8 +12,7 @@ import { PageView,
 				BasketView,
 				SuccessView } from './components/common/AppView';
 import { ProductsChangeEvent } from './components/common/AppData';
-import { OrderForm, ContactsForm } from './components/common/Forms';
-import { Modal } from './components/common/Modal';
+import { OrderForm, ContactsForm, Modal } from './components/common/AppPresenter';
 
 const events = new EventEmitter();
 const api = new AppApi(CDN_URL, API_URL);
