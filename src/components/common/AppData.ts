@@ -116,5 +116,5 @@ export class AppData extends Model<IAppData> {
 			this.events.emit(Events.ORDER_READY, this.order);
 		}
 	}
-
 }
+

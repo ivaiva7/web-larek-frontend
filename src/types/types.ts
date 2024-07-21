@@ -9,11 +9,11 @@ export interface IProduct {
 }
 
 export enum ProductCategory {
-	SOFT_SKILL = 'soft',
-	OTHER = 'other',
-	HARD_SKILL = 'hard',
-	ADDITIONAL = 'additional',
-	BUTTON = 'button'
+	'софт-скил' = 'soft',
+	'другое' = 'other',
+	'хард-скил' = 'hard',
+	'дополнительное' = 'additional',
+	'кнопка' = 'button'
 }
 
 export interface IOrder {
