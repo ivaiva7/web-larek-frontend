@@ -410,7 +410,7 @@ export class SuccessView extends Component<ISuccess> {
 		}
 
 		this.container.addEventListener('click', this.handleClickOutside.bind(this));
-		this._close.addEventListener('click', (event) => event.stopPropagation()); // Для предотвращения перезагрузки при клике на кнопку закрытия
+		this._close.addEventListener('click', (event) => event.stopPropagation());
 	}
 
 	private handleClickOutside(event: MouseEvent) {

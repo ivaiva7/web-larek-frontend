@@ -69,7 +69,6 @@ export enum Events {
 	PAYMENT_METHOD = 'order:paymentMethod',
 	ORDER_READY = 'order:ready',
 	FORM_INVALID = 'form:invalidChanged',
-	ORDER_RESET = 'order:reset',
 	ORDER_CLEARED = 'order:clear',
 }
 

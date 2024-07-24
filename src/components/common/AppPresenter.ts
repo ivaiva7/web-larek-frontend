@@ -98,16 +98,20 @@ export class Modal extends Component<IModal> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		({ _closeButton: this._closeButton, _content: this._content } = this.extractElements(container));
+		try {
+			({ _closeButton: this._closeButton, _content: this._content } = this.extractElements(container));
 
-		if (!this._closeButton || !this._content) {
-			throw new Error('Элемент модального окна не найден');
+			if (!this._closeButton || !this._content) {
+				throw new Error('Элемент модального окна не найден');
+			}
+
+			this._closeButton.addEventListener('click', this.close.bind(this));
+			this.container.addEventListener('click', this.handleClickOutside.bind(this));
+			this._content.addEventListener('click', (event) => event.stopPropagation());
+			document.addEventListener('keydown', this.handleKeyDown);
+		} catch (error) {
+			console.error('Ошибка при инициализации модального окна:', error);
 		}
-
-		this._closeButton.addEventListener('click', this.close.bind(this));
-		this.container.addEventListener('click', this.handleClickOutside.bind(this));
-		this._content.addEventListener('click', (event) => event.stopPropagation());
-		document.addEventListener('keydown', this.handleKeyDown);
 	}
 
 	private extractElements(container: HTMLElement) {
@@ -149,7 +153,12 @@ export class Modal extends Component<IModal> {
 	}
 
 	close() {
-		this.toggleClass(this.container, 'modal_active', false);
-		this.events.emit(Events.MODAL_CLOSE);
+		try {
+			this.toggleClass(this.container, 'modal_active', false);
+			this.events.emit(Events.MODAL_CLOSE);
+		} catch (error) {
+			console.error('Ошибка при закрытии модального окна:', error);
+		}
 	}
 }
+

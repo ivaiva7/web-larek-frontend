@@ -191,10 +191,10 @@ const handleFormInvalid = (errors: Partial<IOrder>) => {
 };
 
 const resetOrderForm = () => {
-	appData.clearOrder(); // Сброс состояния заказа
+	appData.clearOrder();
 	const formErrors = appData.formErrors;
 	if (Object.keys(formErrors).length > 0) {
-		orderForm.resetPaymentButtons(); // Очистить состояние кнопок
+		orderForm.resetPaymentButtons();
 		orderForm.resetAddress();
 	}
 };
@@ -242,41 +242,48 @@ const submitFormOrder = () => {
 
 
 const submitOrder = () => {
-	const isOrderFormValid = appData.isPreviousFormValid();
-	const isContactsFormValid = appData.isFormValid();
+	try {
+		const isOrderFormValid = appData.isPreviousFormValid();
+		const isContactsFormValid = appData.isFormValid();
 
-	if (!isOrderFormValid || !isContactsFormValid) {
-		events.emit(Events.ORDER_START);
-		return;
-	}
+		if (!isOrderFormValid || !isContactsFormValid) {
+			events.emit(Events.ORDER_START);
+			return;
+		}
 
-	const products = appData.getBasket();
-	api.makeOrder({
-		...appData.getOrder(),
-		items: products.map(product => product.id),
-		total: appData.getTotalPrice(),
-	})
-		.then((result) => {
-			const modalContent = successView.render({
-				title: !result.error ? 'Заказ оформлен' : 'Ошибка оформления заказа',
-				description: !result.error ? `Списано ${result.total} синапсов` : result.error,
-			});
-
-			modal.render({
-				content: modalContent,
-			});
-
-			const onModalClose = () => {
-				window.location.reload();
-				events.off(Events.MODAL_CLOSE, onModalClose);
-			};
-			events.on(Events.MODAL_CLOSE, onModalClose);
-
-			clearOrderAndBasket();
-			clearInputs();
+		const products = appData.getBasket();
+		api.makeOrder({
+			...appData.getOrder(),
+			items: products.map(product => product.id),
+			total: appData.getTotalPrice(),
 		})
-		.catch(console.error);
+			.then((result) => {
+				const modalContent = successView.render({
+					title: !result.error ? 'Заказ оформлен' : 'Ошибка оформления заказа',
+					description: !result.error ? `Списано ${result.total} синапсов` : result.error,
+				});
+
+				modal.render({
+					content: modalContent,
+				});
+
+				const onModalClose = () => {
+					window.location.reload();
+					events.off(Events.MODAL_CLOSE, onModalClose);
+				};
+				events.on(Events.MODAL_CLOSE, onModalClose);
+
+				clearOrderAndBasket();
+				clearInputs();
+			})
+			.catch((error) => {
+				console.error('Ошибка при оформлении заказа:', error);
+			});
+	} catch (error) {
+		console.error('Ошибка при отправке заказа:', error);
+	}
 };
+
 
 
 events.on<ProductsChangeEvent>(Events.PRODUCTS_CHANGED, renderProducts);
