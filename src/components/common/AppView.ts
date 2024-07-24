@@ -114,9 +114,15 @@ export class ProductView extends Component<IProductView> {
 	set category(value: keyof typeof ProductCategory) {
 		if (this._category) {
 			this.setText(this._category, value);
+
+			const existingClasses = Array.from(this._category.classList)
+				.filter(className => className.startsWith('card__category_'));
+			existingClasses.forEach(className => this._category.classList.remove(className));
+
 			const categoryClass = `card__category_${ProductCategory[value]}`;
-			if (!this._category.classList.contains(categoryClass))
-				this._category.classList.add(categoryClass)
+			if (!this._category.classList.contains(categoryClass)) {
+				this._category.classList.add(categoryClass);
+			}
 		}
 	}
 
@@ -135,19 +141,12 @@ export class ProductView extends Component<IProductView> {
 			this.setText(this._button, 'Недоступно');
 			this.setDisabled(this._button, true);
 		} else {
-			switch (status) {
-				case true:
-					this.setText(this._button, 'Уже в корзине');
-					this.setDisabled(this._button, true);
-					break;
-				case false:
-					this.setText(this._button, 'В корзину');
-					this.setDisabled(this._button, false);
-					break;
-			}
+			this.setText(this._button, status ? 'Уже в корзине' : 'В корзину');
+			this.setDisabled(this._button, status);
 		}
 	}
 }
+
 
 export class ProductViewModal extends ProductView {
 	private _description: HTMLElement;
@@ -163,7 +162,6 @@ export class ProductViewModal extends ProductView {
 		this.setText(this._description, value);
 	}
 }
-
 export class ProductBasketView extends Component<BasketProduct | ListItem> {
 	private _index: HTMLElement;
 	private _price: HTMLElement;
@@ -286,6 +284,7 @@ export class ContactsForm extends Forms<IOrder> {
 	set email(value: string) {
 		this._inputEmail.value = value;
 	}
+
 }
 
 export class OrderForm extends Forms<IOrder> {
@@ -326,6 +325,10 @@ export class OrderForm extends Forms<IOrder> {
 		this.toggleCash(false);
 	}
 
+	resetAddress() {
+		this._inputAddress.value = '';
+	}
+
 	togglePaymentMethod(selectedPayment: string) {
 		const cardActive = this._buttonOnlinePayment.classList.contains('button_alt-active');
 		const cashActive = this._buttonCashPayment.classList.contains('button_alt-active');
@@ -353,15 +356,18 @@ export class OrderForm extends Forms<IOrder> {
 	set payment(value: string) {
 		this.events.emit(Events.PAYMENT_METHOD, { paymentType: value });
 	}
+
 }
 
 interface ISuccess {
 	title: string;
 	description: string;
+	onClick?: () => void;
 }
 
 interface ISuccessActions {
 	onClick?: () => void;
+	onClose?: () => void;
 }
 
 const DOMSelectorsSuccess = {
@@ -370,12 +376,24 @@ const DOMSelectorsSuccess = {
 	SUCCESS_DESCRIPTION: '.order-success__description'
 }
 
+
+interface ISuccess {
+	title: string;
+	description: string;
+}
+
+interface ISuccessActions {
+	onClick?: () => void;
+	onClose?: () => void;
+}
+
+
 export class SuccessView extends Component<ISuccess> {
 	private _close!: HTMLElement;
 	private _title!: HTMLElement;
 	private _description!: HTMLElement;
 
-	constructor(container: HTMLElement, { onClick }: ISuccessActions) {
+	constructor(container: HTMLElement, { onClick, onClose }: ISuccessActions) {
 		super(container);
 
 		const { SUCCESS_CLOSE, SUCCESS_TITLE, SUCCESS_DESCRIPTION } = DOMSelectorsSuccess;
@@ -386,6 +404,23 @@ export class SuccessView extends Component<ISuccess> {
 		if (onClick) {
 			this._close.addEventListener('click', onClick);
 		}
+
+		if (onClose) {
+			this._close.addEventListener('click', onClose);
+		}
+
+		this.container.addEventListener('click', this.handleClickOutside.bind(this));
+		this._close.addEventListener('click', (event) => event.stopPropagation()); // Для предотвращения перезагрузки при клике на кнопку закрытия
+	}
+
+	private handleClickOutside(event: MouseEvent) {
+		if (event.target === this.container) {
+			this.reloadPage();
+		}
+	}
+
+	private reloadPage() {
+		window.location.reload();
 	}
 
 	set title(value: string) {
@@ -402,3 +437,5 @@ export class SuccessView extends Component<ISuccess> {
 		return this.container;
 	}
 }
+
+

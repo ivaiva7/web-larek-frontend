@@ -3,7 +3,6 @@ import { Component } from '../base/component';
 import { IEvents } from '../base/events';
 import { ensureElement } from '../../utils/utils';
 
-
 export const DOMSelectorsForms = {
 	SUBMIT_BUTTON: 'button[type=submit]',
 	ERRORS_CONTAINER: '.form__errors',
@@ -32,6 +31,8 @@ export class Forms<T> extends Component<IFormState> {
 
 		this.container.addEventListener('input', this.handleInputChange.bind(this));
 		this.container.addEventListener('submit', this.handleSubmit.bind(this));
+
+		this.restoreFormState(); // Восстановление состояния формы при инициализации
 	}
 
 	private handleInputChange(evt: Event) {
@@ -64,7 +65,23 @@ export class Forms<T> extends Component<IFormState> {
 		Object.assign(this, inputs);
 		return this.container;
 	}
+
+	// Новый метод для установки состояния формы
+	setFormState(data: Partial<T> & IFormState) {
+		Object.assign(this, data);
+		this.render(data);
+	}
+
+	private restoreFormState() {
+		const formState = localStorage.getItem('formState');
+		if (formState) {
+			const { valid, errors } = JSON.parse(formState);
+			this.valid = valid;
+			this.errors = errors;
+		}
+	}
 }
+
 
 const DOMSelectorsModal = {
 	CLOSE_BUTTON: '.modal__close',
@@ -121,6 +138,10 @@ export class Modal extends Component<IModal> {
 		super.render(data);
 		this.open();
 		return this.container;
+	}
+
+	isOpen(): boolean {
+		return this.container.classList.contains('modal_active');
 	}
 
 	open() {
