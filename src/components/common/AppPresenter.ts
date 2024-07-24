@@ -32,7 +32,7 @@ export class Forms<T> extends Component<IFormState> {
 		this.container.addEventListener('input', this.handleInputChange.bind(this));
 		this.container.addEventListener('submit', this.handleSubmit.bind(this));
 
-		this.restoreFormState(); // Восстановление состояния формы при инициализации
+		this.restoreFormState();
 	}
 
 	private handleInputChange(evt: Event) {
@@ -66,7 +66,6 @@ export class Forms<T> extends Component<IFormState> {
 		return this.container;
 	}
 
-	// Новый метод для установки состояния формы
 	setFormState(data: Partial<T> & IFormState) {
 		Object.assign(this, data);
 		this.render(data);
